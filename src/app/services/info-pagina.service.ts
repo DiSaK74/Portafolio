@@ -4,6 +4,8 @@ import { InfoPagina } from '../interfaces/info-pagina.interface';
 import { InfoEquipo } from './../interfaces/info-equipo.interface';
 import { InfoProductos } from '../interfaces/info-productos.interface';
 import { InfoProductosIdx } from '../interfaces/info-productos-idx.interface';
+import { Equipo } from '../interfaces/equipo.interface';
+import { Producto } from './../interfaces/producto.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -11,10 +13,12 @@ import { InfoProductosIdx } from '../interfaces/info-productos-idx.interface';
 export class InfoPaginaService {
 
   public info: InfoPagina = {};
-  public equipo: InfoEquipo = {};
-  public productos: InfoProductos = {};
-  public productos_idx: InfoProductosIdx = {};
+  public equipo: Equipo[] = [];
+  public productos: InfoProductos[] = [];
+  public productos_idx: InfoProductosIdx[] = [];
   public cargada = false;
+
+  public cargando_productos = true;
 
   constructor(private http: HttpClient) {
     console.log('Servicio de pagina cargado');
@@ -40,18 +44,18 @@ export class InfoPaginaService {
   cargaEquipo() {
     this.http.get('assets/data/data-equipo.json').subscribe(
       (res: InfoEquipo) => {
-        this.equipo = res;
+        this.equipo = res.equipo;
         console.log('Respuesta llamada equipo', res);
-        console.log('Frase:', res['frase']);
-        console.log('Frase:', this.equipo.frase);
+        console.log('Equipo:', this.equipo);
       }
     );
   }
 
   cargaProductos() {
     this.http.get('assets/data/data-productos.json').subscribe(
-      (res: InfoProductos) => {
+      (res: InfoProductos[]) => {
         this.productos = res;
+        this.cargando_productos = false;
         console.log('Respuesta llamada productos', res);
         console.log('Productos:', this.productos);
       }
@@ -60,7 +64,7 @@ export class InfoPaginaService {
 
   cargaProductos_idx() {
     this.http.get('assets/data/data-productos-idx.json').subscribe(
-      (res: InfoProductosIdx) => {
+      (res: InfoProductosIdx[]) => {
         this.productos_idx = res;
         console.log('Respuesta llamada productos idx', res);
         console.log('Productos Idx:', this.productos_idx);
