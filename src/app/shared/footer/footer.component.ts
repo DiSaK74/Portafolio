@@ -15,7 +15,6 @@ export class FooterComponent implements OnInit {
 ) { }
 
   ngOnInit() {
-    console.log('Footer info pagina:', this._infoPagina.info.email);
   }
 
 }

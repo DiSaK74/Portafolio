@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { InfoPaginaService } from './../../services/info-pagina.service';
+import { InfoProductosIdx } from './../../interfaces/info-productos-idx.interface';
 
 @Component({
   selector: 'app-header',
@@ -7,13 +8,31 @@ import { InfoPaginaService } from './../../services/info-pagina.service';
   styleUrls: ['./header.component.sass']
 })
 export class HeaderComponent implements OnInit {
+  tmpProductos: InfoProductosIdx[];
 
   constructor(
-              public _infoPagina: InfoPaginaService
+    public _infoPagina: InfoPaginaService
   ) { }
 
   ngOnInit() {
-    console.log('Header info pagina:', this._infoPagina.info.email);
+    this._infoPagina.leerProductos_idx().subscribe(
+      (res: InfoProductosIdx[]) => {
+        this.tmpProductos = res;
+      }
+    );
+  }
+
+  changeBuscar(texto: string) {
+    if (texto.length >= 1) {
+      this._infoPagina.productos_idx = this.tmpProductos
+        .filter(
+          producto => {
+            return producto.titulo.toLocaleLowerCase().match(texto.toLocaleLowerCase());
+          }
+        );
+    } else {
+      this._infoPagina.productos_idx = this.tmpProductos;
+    }
   }
 
 }

@@ -18,10 +18,9 @@ export class InfoPaginaService {
   public productos_idx: InfoProductosIdx[] = [];
   public cargada = false;
 
-  public cargando_productos = true;
+  public cargando_productos_idx = true;
 
   constructor(private http: HttpClient) {
-    console.log('Servicio de pagina cargado');
     this.cargaPagina();
     this.cargaEquipo();
     this.cargaProductos();
@@ -34,9 +33,6 @@ export class InfoPaginaService {
       (res: InfoPagina) => {
         this.cargada = true;
         this.info = res;
-        console.log('Respuesta llamada info', res);
-        console.log('Titulo:', res['titulo']);
-        console.log('Titulo:', this.info.titulo);
       }
     );
   }
@@ -45,8 +41,6 @@ export class InfoPaginaService {
     this.http.get('assets/data/data-equipo.json').subscribe(
       (res: InfoEquipo) => {
         this.equipo = res.equipo;
-        console.log('Respuesta llamada equipo', res);
-        console.log('Equipo:', this.equipo);
       }
     );
   }
@@ -55,9 +49,6 @@ export class InfoPaginaService {
     this.http.get('assets/data/data-productos.json').subscribe(
       (res: InfoProductos[]) => {
         this.productos = res;
-        this.cargando_productos = false;
-        console.log('Respuesta llamada productos', res);
-        console.log('Productos:', this.productos);
       }
     );
   }
@@ -66,9 +57,17 @@ export class InfoPaginaService {
     this.http.get('assets/data/data-productos-idx.json').subscribe(
       (res: InfoProductosIdx[]) => {
         this.productos_idx = res;
-        console.log('Respuesta llamada productos idx', res);
-        console.log('Productos Idx:', this.productos_idx);
+        this.cargando_productos_idx = false;
       }
     );
   }
+
+  leerProductos_idx() {
+    return this.http.get('assets/data/data-productos-idx.json');
+  }
+
+  getProducto(id): InfoProductos {
+    return this.productos[id];
+  }
+
 }
